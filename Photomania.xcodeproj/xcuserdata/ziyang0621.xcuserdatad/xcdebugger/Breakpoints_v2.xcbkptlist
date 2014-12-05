@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Photomania/PhotoBrowserCollectionViewController.swift"
-            timestampString = "439431357.634361"
+            timestampString = "439506761.094346"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "137"
-            endingLineNumber = "137"
+            startingLineNumber = "151"
+            endingLineNumber = "151"
             landmarkName = "populatePhotos()"
             landmarkType = "5">
          </BreakpointContent>

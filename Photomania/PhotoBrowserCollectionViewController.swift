@@ -12,6 +12,7 @@ import Alamofire
 class PhotoBrowserCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     var photos = NSMutableOrderedSet()
     
+    let imageCache = NSCache()
     let refreshControl = UIRefreshControl()
     var populatingPhotos = false
     var currentPage = 1
@@ -45,13 +46,26 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
         
         let imageURL = (photos.objectAtIndex(indexPath.row) as PhotoInfo).url
         
-        cell.imageView.image = nil
+        if cell.request?.request.URLString != imageURL {
+            cell.request?.cancel()
+        }
         
-        cell.request = Alamofire.request(.GET, imageURL).responseImage() {
-            (request, _, image, error) in
-            if error == nil && image != nil {
-                if request.URLString == cell.request?.request.URLString {
-                    cell.imageView.image = image
+        if let image = self.imageCache.objectForKey(imageURL) as? UIImage {
+            cell.imageView.image = image
+        } else {
+            cell.imageView.image = nil
+            
+            cell.request = Alamofire.request(.GET, imageURL).validate(contentType: ["image/*"]).responseImage() {
+                (request, _, image, error) in
+                
+                if error === nil && image != nil {
+                    self.imageCache.setObject(image!, forKey: request.URLString)
+                    
+                    if request.URLString == cell.request?.request.URLString {
+                        cell.imageView.image = image
+                    }
+                } else {
+                    
                 }
             }
         }
@@ -141,8 +155,16 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
     }
     
     func handleRefresh() {
+        refreshControl.beginRefreshing()
         
+        self.photos.removeAllObjects()
+        self.currentPage = 1
         
+        self.collectionView!.reloadData()
+        
+        refreshControl.endRefreshing()
+        
+        populatePhotos()
     }
 }
 
