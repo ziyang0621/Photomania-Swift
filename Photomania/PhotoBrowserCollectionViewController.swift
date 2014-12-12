@@ -134,7 +134,7 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
             
             if error == nil {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-                    let photoInfos = ((JSON as NSDictionary).valueForKey("photos") as [NSDictionary]).filter({ ($0["nsfw"] as Bool) == false }).map { PhotoInfo(id: $0["id"] as Int, url: $0["image_url"] as String) }
+                    let photoInfos = ((JSON as NSDictionary).valueForKey("photos") as [NSDictionary]).map { PhotoInfo(id: $0["id"] as Int, url: $0["image_url"] as String) }
                     
                     let lastItem = self.photos.count
                     
